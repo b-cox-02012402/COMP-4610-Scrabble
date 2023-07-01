@@ -38,68 +38,67 @@
     <!-- Lodash package has many useful utilities for parsing objects and structures -->
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
 
-    <script src="./script.js"></script>
+    <!-- <script src="./script.js"></script> -->
 </head>
 
 <body>
     <nav id="top-nav" class="navbar navbar-light navbar-expand-sm pull-right">
-        <a id="title" class="navbar-brand" href="#">SCRABBLE</a>
+        <a id="title" class="navbar-brand" href="index.html">SCRABBLE</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Play Now<span class="sr-only"> (current)</span></a>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Play Now</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="htp.html">How to Play</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="system.html">Point System</a>
+                <li class="nav-item active">
+                    <a class="nav-link" href="system.html">Point System<span class="sr-only"> (current)</span></a>
                 </li>
             </ul>
         </div>
     </nav>
-    <!-- <div id="description" class="row justify-content-center col-xs-6">
-        <h1>Scrabble</h1>
-        <p>Welcome to the one-line scrabble game. Please refer to the legend on the right for the point system.</p>
-        <h3>How to Play:</h3>
-        <ul>
-            <li>
-                The tiles below are the letters you have to work with.
-            </li>
-            <li>
-                Try to create any word by dragging and dropping each letter to the board below.
-            </li>
-            <li>
-                Press the check button to submit your word!
-            </li>
-        </ul>
-    </div> -->
-    <div id="content">
-        <div id="actions-score" class="justify-content-around row">
-            <div id="reset-wrapper" class="justify-content-center col-xs-4">
-                <button id="reset" onclick="refreshPage()" class="button">Reset</button>
-            </div>
-            <div id="status" class="justify-content-center col-xs-4">
-                <ul>
-                    <li id="word">Word:</li>
-                    <li id="score">Score:</li>
-                    <li id="letter">Letter:</li>
-                </ul>
-            </div>
-            <div id="submit-wrapper" class="justify-content-center col-xs-4">
-                <button id="submit" onclick="submitBoard()" class="button">Submit</button>
-            </div>
-        </div>
-        <div id="board-holder" class="row">
-            <img id="droppable-board" class="static" src="./Scrabble_Board_OneLine.png" />
-        </div>
-        <div id="tile-holder" class="justify-content-center row">
-            <img id="holder-img" class="static" src="./scrabble-tile-holder-406774_640.png" />
-        </div>
+    <div id="content" class="row justify-content-center col-xs-6">
+        <table>
+            <tbody>
+                <tr>
+                    <th>Letter</th>
+                    <th>Points</th>
+                </tr>
+                <tr>
+                    <td>A, E, I, O, U, N, S, T, R</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>D, G</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>B, C, M, P</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td>F, H, V, W, Y</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>K</td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td>J, X</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>Q, Z</td>
+                    <td>10</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </body>
 

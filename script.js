@@ -1,3 +1,4 @@
+var activeTiles = [];
 var tileLetters = [];
 var boardPostions = [
   {
@@ -171,6 +172,9 @@ var tempWidth = 0;
 $().ready(() => {
   loadTiles();
   getBoardPositions();
+  $().on('change drop'), () => {
+    loadTiles(false);
+  }
   $(window).on('resize', () => {
     $('#holder-img').height($('#droppable-board').height() + 20);
     $('#holder-img').width(($('#droppable-board').width() / 15) * 7);
@@ -188,7 +192,6 @@ $().ready(() => {
     }
     getBoardPositions();
   });
-  $('#submit').on('submit', () => submitBoard());
 });
 
 function getBoardPositions() {
@@ -199,78 +202,107 @@ function getBoardPositions() {
   for (let i = 0; i < boardPostions.length; i++) {
     width = 3 * (i + 1) + (i * $(`#tile-1`).width());
     boardPostions[i].tile.position.top = boardPosTop;
-    boardPostions[i].tile.position.left = width + boardPosLeft;
+    boardPostions[i].tile.position.left = boardPosLeft + ($('#droppable-board').width() / 15 * i);
   }
 }
 
-function loadTiles() {
-  $('#holder-img').height($('#droppable-board').height() + 20);
-  $('#holder-img').width(($('#droppable-board').width() / 15) * 7);
-  $('#holder-img').css({
-    'margin-left': 'auto',
-    'margin-right': 'auto',
-    'position': 'absolute'
-  });
-  const dimensions = $('#droppable-board').width() / 15;
-  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-  for (let i = 0; i < 7; i++) {
-    const rand = alphabet.charAt(Math.floor(Math.random() * 26));
-    let url = `Scrabble_Tiles/Scrabble_Tile_${rand}.jpg`;
-    console.log(url);
-    var newImg = $(`<img id="tile-${i}" src="Scrabble_Tiles/Scrabble_Tile_${rand}.jpg" />`);
-    $(newImg).css({
-      'position': 'relative',
-      'padding': '0 2px',
-      'margin': '3px 0',
-      'background-color': 'transparent',
-      'width': dimensions,
-      'height': dimensions
+function loadTiles(reload = true) {
+  if (reload) {
+    $('#holder-img').height($('#droppable-board').height() + 20);
+    $('#holder-img').width(($('#droppable-board').width() / 15) * 7);
+    $('#holder-img').css({
+      'margin-left': 'auto',
+      'margin-right': 'auto',
+      'position': 'absolute'
     });
-    $('#tile-holder').append(newImg);
-    $(newImg).draggable({
-      snap: '#droppable-board, #tile-holder',
-      snapMode: 'inside',
-      revert: (dropped) => !$(dropped[0]).is('#droppable-board')
-    });
-    tileLetters.push(ScrabbleTiles[rand]);
+    const dimensions = ($('#droppable-board').width() / 15) - ($('#droppable-board').width() % 15);
+    const padding = $('#droppable-board').width() % 15;
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    for (let i = 0; i < 7; i++) {
+      const rand = alphabet.charAt(Math.floor(Math.random() * 26));
+      var newImg = $(`<img id="tile-${i}" src="Scrabble_Tiles/Scrabble_Tile_${rand}.jpg" />`);
+      $(newImg).css({
+        'position': 'relative',
+        'padding': '0 ' + padding / 2 + 'px',
+        'margin': '3px 0',
+        'background-color': 'transparent',
+        'width': dimensions,
+        'height': dimensions
+      });
+      $('#tile-holder').append(newImg);
+      tileLetters.push(rand);
+      $(newImg).draggable({
+        snap: '#droppable-board, #tile-holder',
+        snapMode: 'inside',
+        revert: (dropped) => !$(dropped[0]).is('#droppable-board')
+      });
+    }
   }
+
   $('#droppable-board').droppable({
     drop: (event, ui) => {
-      const offsetLeft = $('#droppable-board').offset().left + $('#holder-img').width();
-      console.log(offsetLeft);
+      console.log($('#droppable-board').width() % 15);
       const boardSpot = _.find(boardPostions, (b) => (b.tile.position.left < (ui.offset.left + ui.draggable[0].width / 2)) && (b.tile.position.left > (ui.offset.left - ui.draggable[0].width / 2))
       );
-      if (boardSpot) {
-        boardSpot['isMarked'] = true;
-        if (_.indexOf(boardPostions, boardSpot) >= 10) {
-          if (_.indexOf(boardPostions, boardSpot) > 12) {
-            boardSpot.tile.position.left += 6;
-          } else {
-            boardSpot.tile.position.left += 3;
-          }
-        }
-        boardSpot['hasLetter'] = ui.draggable[0].src.slice(-5, -4);
-        console.log(_.remove(boardPostions, (b) => b.hasLetter == boardSpot['hasLetter']));
-        console.log('TEST... ', boardSpot['hasLetter']);
-        $(`#${ui.draggable.attr("id")}`).css({
-          'position': 'absolute',
-          'border': '2px solid black',
-          'background-color': 'black',
-          'left': boardSpot.tile.position.left + 'px',
-          'top': boardSpot.tile.position.top + 'px',
-        });
-      }
+      boardSpot['hasLetter'] = _.toString(ui.draggable[0].src.slice(-5, -4));
+      boardSpot['id'] = ui.draggable.attr("id");
+
+
+      _.forEach(_.filter(boardPostions, (d) => (boardSpot['id'] === d.id && (d.tile.position.left != boardSpot.tile.position.left))), (element) => {
+        console.log('DELETING', element.hasLetter, 'FROM', element.tile.type);
+        delete element.hasLetter;
+        delete element.id;
+      });
+
+
+      $('#letter').text('Letter: ' + boardSpot['hasLetter']);
+      $('#word').text('Word: ' + getWord());
+      activeTiles.push(boardSpot.hasLetter);
+      $(`#${ui.draggable.attr("id")}`).css({
+        'position': 'absolute',
+        'left': boardSpot.tile.position.left + 'px',
+        'top': boardSpot.tile.position.top + 'px',
+      });
     }
   });
+}
+
+function getWord() {
+  let word = '';
+  _.forEach(_.filter(boardPostions, (d) => _.isString(d.hasLetter)), (e) => {
+    word += e.hasLetter;
+  });
+  return word;
 }
 
 function submitBoard() {
   let marked = 0;
-  for (const b of boardPostions) {
-    if (b['hasLetter']) {
-      marked += ScrabbleTiles[b['hasLetter']].value;
+  let doubleWord = false;
+  console.log(activeTiles);
+  const tileType = _.filter(boardPostions, (letter) => _.isString(letter.hasLetter));
+  console.log(tileType);
+  for (const tileName of tileType) {
+    console.log(tileName.tile.type);
+    switch (tileName.tile.type) {
+      case 'double letter':
+        marked += (ScrabbleTiles[tileName.hasLetter].value * 2);
+        break;
+      case 'double word':
+        doubleWord = true;
+        marked += ScrabbleTiles[tileName.hasLetter].value;
+        break;
+      default:
+        marked += ScrabbleTiles[tileName.hasLetter].value;
+        break;
     }
   }
-  $('#score').text('Score: '+ marked);
+  if (doubleWord) {
+    marked += marked;
+  }
+  $('#score').text('Score: ' + marked);
   console.log(marked);
+}
+
+function refreshPage() {
+  location.reload();
 }

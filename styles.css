@@ -47,6 +47,12 @@ body, body * {
     margin: 30px auto;
 }
 
+table * {
+    border: 2px solid black;
+    text-align: center;
+    padding: 4px;
+}
+
 #actions-score {
     height: 50px;
     width: 100%;
@@ -73,6 +79,11 @@ body, body * {
     float: right;
 }
 
+#word, #score, #letter {
+    list-style-type: none;
+    text-align: end;
+}
+
 #droppable-board {
     margin-left: auto;
     margin-right: auto;
@@ -80,15 +91,6 @@ body, body * {
     max-height: 100%;
     width: auto;
 }
-
-/* #tile-holder * img {
-    max-height: 100px;
-    max-width: 530px;
-}
-
-#board > img {
-    max-height: 80px;
-} */
 
 #top-nav * .nav-item:nth-child(2n) {
     border-right: 2px solid;
